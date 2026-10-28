@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Products · StockWise{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">CATALOGUE</p><h1>Products</h1><p>Add items and keep quantities up to date.</p></div><a class="button" href="{{ url_for('add_product') }}">＋ Add product</a></section>
+<form class="search" method="get"><input name="q" value="{{ q }}" placeholder="Search product or category"><button class="button secondary">Search</button><a class="button ghost" href="{{ url_for('products') }}">Reset</a></form>
+<section class="panel"><div class="table-wrap"><table><thead><tr><th>Product</th><th>Category</th><th>Qty</th><th>Minimum</th><th>Unit price</th><th>Supplier</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for p in products %}<tr><td>{{ p.name }}</td><td>{{ p.category or '—' }}</td><td>{{ p.quantity }}</td><td>{{ p.min_stock }}</td><td>₹{{ '%.2f'|format(p.unit_price) }}</td><td>{{ p.supplier or '—' }}</td><td><span class="badge {{ 'out' if p.quantity <= 0 else ('low' if p.quantity <= p.min_stock else 'ok') }}">{{ status(p) }}</span></td><td class="actions"><a class="small-button" href="{{ url_for('edit_product', pid=p.id) }}">Edit</a><form method="post" action="{{ url_for('delete_product', pid=p.id) }}" class="inline" data-confirm="Delete this product?"><button class="small-button danger-button">Delete</button></form></td></tr>
+{% else %}<tr><td colspan="8">No matching products.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

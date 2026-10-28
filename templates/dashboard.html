@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block title %}Dashboard · StockWise{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">INVENTORY OVERVIEW</p><h1>Dashboard</h1><p>Keep stock visible, organized, and ready.</p></div><a class="button" href="{{ url_for('add_product') }}">＋ Add product</a></section>
+<div class="cards">
+  <article class="metric"><span>Total products</span><strong>{{ total_products }}</strong></article>
+  <article class="metric warning"><span>Low stock</span><strong>{{ low_count }}</strong></article>
+  <article class="metric danger"><span>Out of stock</span><strong>{{ out_count }}</strong></article>
+  <article class="metric"><span>Total stock value</span><strong>₹{{ '%.2f'|format(total_value) }}</strong></article>
+</div>
+<section class="panel"><div class="panel-heading"><h2>Stock status</h2><a href="{{ url_for('products') }}">View all →</a></div>
+<div class="table-wrap"><table><thead><tr><th>Product</th><th>Category</th><th>Quantity</th><th>Minimum</th><th>Status</th></tr></thead><tbody>
+{% for p in products %}<tr><td>{{ p.name }}</td><td>{{ p.category or '—' }}</td><td>{{ p.quantity }}</td><td>{{ p.min_stock }}</td><td><span class="badge {{ 'out' if p.quantity <= 0 else ('low' if p.quantity <= p.min_stock else 'ok') }}">{{ status(p) }}</span></td></tr>
+{% else %}<tr><td colspan="5">No products yet.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<section class="panel"><div class="panel-heading"><h2>Recent transactions</h2><a href="{{ url_for('transactions') }}">Manage →</a></div>
+<div class="table-wrap"><table><thead><tr><th>Date</th><th>Product</th><th>Action</th><th>Quantity</th><th>Note</th></tr></thead><tbody>
+{% for t in recent %}<tr><td>{{ t.created_at }}</td><td>{{ t.product_name }}</td><td>{{ t.action }}</td><td>{{ t.quantity }}</td><td>{{ t.note or '—' }}</td></tr>{% else %}<tr><td colspan="5">No transactions recorded yet.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

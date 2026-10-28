@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Transactions · StockWise{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">STOCK MOVEMENT</p><h1>Transactions</h1><p>Record incoming stock or outgoing stock with a simple audit trail.</p></div></section>
+<section class="panel"><h2>Record a transaction</h2><form method="post" class="form-grid">
+<label>Product *<select name="product_id" required>{% for p in products %}<option value="{{ p.id }}">{{ p.name }} (available: {{ p.quantity }})</option>{% endfor %}</select></label>
+<label>Action *<select name="action"><option>Stock In</option><option>Stock Out</option></select></label>
+<label>Quantity *<input type="number" name="quantity" min="1" required value="1"></label>
+<label>Note<input name="note" placeholder="Optional reason or reference"></label>
+<div class="form-actions"><button class="button">Save transaction</button></div>
+</form></section>
+<section class="panel"><div class="panel-heading"><h2>Transaction history</h2><a href="{{ url_for('export_transactions') }}">Export CSV ↓</a></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Product</th><th>Action</th><th>Quantity</th><th>Note</th></tr></thead><tbody>
+{% for t in transactions %}<tr><td>{{ t.created_at }}</td><td>{{ t.product_name }}</td><td>{{ t.action }}</td><td>{{ t.quantity }}</td><td>{{ t.note or '—' }}</td></tr>{% else %}<tr><td colspan="5">No transactions yet.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}
